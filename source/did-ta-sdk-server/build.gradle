@@ -1,0 +1,127 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+group = 'org.omnione.did'
+version = '2.0.0'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+dependencies {
+    // OmniOne SDK JARs (including did-common-sdk-server)
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // Crypto (versions aligned with TA Server)
+    api 'org.bouncycastle:bcprov-jdk18on:1.78.1'
+    api 'org.bouncycastle:bcpkix-jdk18on:1.78.1'
+
+    // JSON (versions aligned with TA Server)
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1'
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // Logging
+    api 'org.slf4j:slf4j-api:2.0.7'
+
+    // Test
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    testImplementation 'org.mockito:mockito-core:5.8.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.8.0'
+    testRuntimeOnly 'ch.qos.logback:logback-classic:1.4.14'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-parameters'
+    options.compilerArgs << '-Xlint:unchecked'
+    options.compilerArgs << '-Xlint:deprecation'
+}
+
+test {
+    useJUnitPlatform()
+
+    // Parallel testing
+    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+
+    // Test logging
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+        showStandardStreams = false
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version,
+            'Built-By': System.getProperty('user.name'),
+            'Built-JDK': System.getProperty('java.version'),
+            'Built-Date': new Date().format('yyyy-MM-dd HH:mm:ss')
+        )
+    }
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.author = true
+    options.version = true
+    options.links(
+        'https://docs.oracle.com/en/java/javase/21/docs/api/'
+    )
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                name = 'OpenDID TA SDK Server'
+                description = 'Trust Agent SDK for OpenDID ecosystem'
+                url = 'https://github.com/OmniOneID/did-ta-sdk-server'
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'omnione'
+                        name = 'OmniOne Team'
+                        email = 'contact@omnione.net'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/OmniOneID/did-ta-sdk-server.git'
+                    developerConnection = 'scm:git:ssh://github.com/OmniOneID/did-ta-sdk-server.git'
+                    url = 'https://github.com/OmniOneID/did-ta-sdk-server'
+                }
+            }
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}
