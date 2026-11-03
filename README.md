@@ -72,7 +72,7 @@ The libraries used in this project are organized into two main categories.
 
 ## API Reference
 
-For detailed information about the API, please refer to the [TA SDK Server API](./docs/api/TA_SDK-SERVER_API_ko.md) documentation.
+For detailed information about the API, please refer to the [TA SDK Server API](docs/api/TA_SDK-SERVER_API.md) documentation.
 
 ## Change Log
 

@@ -70,7 +70,7 @@ After QA approval, manage the complete version control of all modules in a separ
 
    | Repository            | Version | Changelog                                                                              | Release |
    | --------------------- | ------- | -------------------------------------------------------------------------------------- | ------- |
-   | did-ta-sdk-server | V2.0.0  | [Changelog](https://github.com/OmniOneID/did-ta-sdk-server/blob/main/CHANGELOG.md) |         |
+   | did-ta-sdk-server | V1.0.0  | [Changelog](https://github.com/OmniOneID/did-ta-sdk-server/blob/main/CHANGELOG.md) |         |
 
 <br>
 

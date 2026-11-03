@@ -19,11 +19,11 @@ TA SDK Server Error
 ==
 
 - Date: 2026-03-04
-- Version: v2.0.0
+- Version: v1.0.0
 
 | Version | Date       | History       |
 | ------- | ---------- | ------------- |
-| v2.0.0  | 2026-03-04 | Initial       |
+| v1.0.0  | 2026-03-04 | Initial       |
 
 <div style="page-break-after: always;"></div>
 

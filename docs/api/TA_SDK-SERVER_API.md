@@ -20,11 +20,11 @@ puppeteer:
 - Topic: TA SDK Server API
 - Author: OpenDID
 - Date: 2026-03-04
-- Version: v2.0.0
+- Version: v1.0.0
 
 | Version | Date       | Changes       |
 | ------- | ---------- | ------------- |
-| v2.0.0  | 2026-03-04 | Initial Draft |
+| v1.0.0  | 2026-03-04 | Initial Draft |
 
 
 <div style="page-break-after: always;"></div>

@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.0.0 (2026-03-04)
+## [Unreleased] (v1.0.0)
 
 ### 🚀 New Features
 - TA SDK Server
@@ -39,3 +39,6 @@
         - `IssuerApiException`: Issuer API communication exception
     - Client Interface
         - `IssuerApiClient`: Issuer server HTTP communication interface
+
+### 🔧 Changes
+- Uses did-common-sdk-server 3.0.0
