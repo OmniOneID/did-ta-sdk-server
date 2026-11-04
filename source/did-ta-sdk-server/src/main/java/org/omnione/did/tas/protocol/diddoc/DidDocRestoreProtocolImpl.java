@@ -10,6 +10,7 @@ import org.omnione.did.common.util.DidValidator;
 import org.omnione.did.common.util.did.BaseCoreDidUtil;
 import org.omnione.did.common.util.multibase.BaseMultibaseUtil;
 import org.omnione.did.data.model.did.DidDocument;
+import org.omnione.did.tas.core.AuthNonceMatcher;
 import org.omnione.did.tas.exception.TaSdkErrorCode;
 import org.omnione.did.tas.exception.TaSdkException;
 import org.omnione.did.tas.model.data.DidAuth;
@@ -225,7 +226,7 @@ public class DidDocRestoreProtocolImpl implements DidDocRestoreProtocol {
 
         // 1. authNonce 비교
         String storedAuthNonce = transaction.getAuthNonce();
-        if (storedAuthNonce == null || !storedAuthNonce.equals(didAuth.getAuthNonce())) {
+        if (!AuthNonceMatcher.matches(storedAuthNonce, didAuth.getAuthNonce())) {
             log.error("AuthNonce mismatch");
             throw new TaSdkException(TaSdkErrorCode.AUTH_NONCE_MISMATCH, "AuthNonce mismatch");
         }
@@ -273,7 +274,7 @@ public class DidDocRestoreProtocolImpl implements DidDocRestoreProtocol {
         // 8. 사용자 DID Document 조회 → 공개키 추출
         DidDocument userDidDoc;
         try {
-            userDidDoc = didDocumentProvider.getDidDocument(clientDid);
+            userDidDoc = didDocumentProvider.getDidDocument(verificationMethod);
         } catch (TaSdkException e) {
             throw e;
         } catch (Exception e) {

@@ -16,6 +16,7 @@ import org.omnione.did.data.model.did.DidDocument;
 import org.omnione.did.data.model.did.InvokedDidDoc;
 import org.omnione.did.data.model.did.VerificationMethod;
 import org.omnione.did.data.model.enums.vc.RoleType;
+import org.omnione.did.tas.core.AuthNonceMatcher;
 import org.omnione.did.tas.exception.TaSdkErrorCode;
 import org.omnione.did.tas.exception.TaSdkException;
 import org.omnione.did.tas.model.data.DidAuth;
@@ -343,7 +344,7 @@ public class DidDocUpdateProtocolImpl implements DidDocUpdateProtocol {
 
         DidDocument walletDidDoc;
         try {
-            walletDidDoc = didDocumentProvider.getDidDocument(walletDid);
+            walletDidDoc = didDocumentProvider.getDidDocument(verificationMethod);
         } catch (Exception e) {
             throw new TaSdkException(TaSdkErrorCode.DID_DOCUMENT_NOT_FOUND,
                 "Wallet DID Document not found: " + walletDid);
@@ -414,7 +415,7 @@ public class DidDocUpdateProtocolImpl implements DidDocUpdateProtocol {
         var transaction = transactionProvider.getTransaction(txId);
         String storedAuthNonce = transaction.getAuthNonce();
 
-        if (storedAuthNonce == null || !storedAuthNonce.equals(didAuth.getAuthNonce())) {
+        if (!AuthNonceMatcher.matches(storedAuthNonce, didAuth.getAuthNonce())) {
             log.error("AuthNonce mismatch");
             throw new TaSdkException(TaSdkErrorCode.AUTH_NONCE_MISMATCH,
                 "AuthNonce mismatch");
@@ -475,7 +476,7 @@ public class DidDocUpdateProtocolImpl implements DidDocUpdateProtocol {
         // 9. Get user DID Document and extract public key
         DidDocument userDidDoc;
         try {
-            userDidDoc = didDocumentProvider.getDidDocument(clientDid);
+            userDidDoc = didDocumentProvider.getDidDocument(verificationMethod);
         } catch (TaSdkException e) {
             throw e;
         } catch (Exception e) {
@@ -644,6 +645,10 @@ public class DidDocUpdateProtocolImpl implements DidDocUpdateProtocol {
 
             String tasCertVcRef = certificateProvider.generateCertificateVcUrl(tasDidDoc.getId());
             ProofType proofType = resolveInvokeKeyProofType(tasDidDoc);
+
+            // The owner's key proofs are verified already and are not registered with the DID Document.
+            ownerDidDoc.setProof(null);
+            ownerDidDoc.setProofs(null);
 
             InvokedDidDoc unsignedDoc = DidDocCryptoHelper.generateInvokedDidDoc(
                 tasDidDoc, ownerDidDoc, proofType, tasCertVcRef);

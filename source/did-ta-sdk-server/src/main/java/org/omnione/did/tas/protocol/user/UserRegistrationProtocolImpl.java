@@ -354,7 +354,7 @@ public class UserRegistrationProtocolImpl implements UserRegistrationProtocol {
         }
         DidDocument walletDidDoc;
         try {
-            walletDidDoc = didDocumentProvider.getDidDocument(walletDid);
+            walletDidDoc = didDocumentProvider.getDidDocument(verificationMethod);
         } catch (Exception e) {
             throw new TaSdkException(TaSdkErrorCode.SDK_DID_DOCUMENT_NOT_FOUND,
                 "Wallet DID Document not found: " + walletDid);
@@ -415,6 +415,10 @@ public class UserRegistrationProtocolImpl implements UserRegistrationProtocol {
 
             String tasCertVcRef = certificateProvider.generateCertificateVcUrl(tasDidDoc.getId());
             ProofType proofType = resolveInvokeKeyProofType(tasDidDoc);
+
+            // The owner's key proofs are verified already and are not registered with the DID Document.
+            ownerDidDoc.setProof(null);
+            ownerDidDoc.setProofs(null);
 
             InvokedDidDoc unsignedDoc = DidDocCryptoHelper.generateInvokedDidDoc(
                 tasDidDoc, ownerDidDoc, proofType, tasCertVcRef);

@@ -52,4 +52,12 @@ public class RequestEnrollEntityResponse {
      * <p>SDK가 {@code CertificateProvider.publishCertificateVc()} 호출 결과로 채운다.</p>
      */
     private String vcUrl;
+
+    /**
+     * ID of the issued Certificate VC.
+     *
+     * <p>The server stores it on the transaction and compares it with the vcId of confirm-enroll-entity.
+     * It is internal to the server and is not part of the API response.</p>
+     */
+    private String vcId;
 }

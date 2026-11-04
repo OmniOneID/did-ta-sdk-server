@@ -241,7 +241,7 @@ public class WalletRegistrationProtocolImpl implements WalletRegistrationProtoco
         // 3. Get Provider DID Document from blockchain
         DidDocument providerDidDoc;
         try {
-            providerDidDoc = didDocumentProvider.getDidDocument(providerDid);
+            providerDidDoc = didDocumentProvider.getDidDocument(verificationMethod);
         } catch (Exception e) {
             throw new TaSdkException(TaSdkErrorCode.SDK_DID_DOCUMENT_NOT_FOUND,
                 "Provider DID Document not found: " + providerDid);
@@ -365,6 +365,10 @@ public class WalletRegistrationProtocolImpl implements WalletRegistrationProtoco
 
             // 3. Determine ProofType from TAS invoke key
             ProofType proofType = resolveInvokeKeyProofType(tasDidDoc);
+
+            // The owner's key proofs are verified already and are not registered with the DID Document.
+            ownerDidDoc.setProof(null);
+            ownerDidDoc.setProofs(null);
 
             // 4. Generate unsigned InvokedDidDoc
             InvokedDidDoc unsignedDoc = DidDocCryptoHelper.generateInvokedDidDoc(

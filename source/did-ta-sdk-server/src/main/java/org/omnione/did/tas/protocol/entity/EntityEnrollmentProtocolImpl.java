@@ -10,6 +10,7 @@ import org.omnione.did.common.util.crypto.BaseCryptoUtil;
 import org.omnione.did.common.util.did.BaseCoreDidUtil;
 import org.omnione.did.common.util.multibase.BaseMultibaseUtil;
 import org.omnione.did.common.util.vc.BaseCoreVcUtil;
+import org.omnione.did.tas.core.AuthNonceMatcher;
 import org.omnione.did.tas.core.vc.VcBuilder;
 import org.omnione.did.data.model.did.DidDocument;
 import org.omnione.did.data.model.enums.vc.VcType;
@@ -194,6 +195,7 @@ public class EntityEnrollmentProtocolImpl implements EntityEnrollmentProtocol {
                     .iv(encodedIv)
                     .encVc(encodedEncVc)
                     .vcUrl(vcUrl)
+                    .vcId(certificateVc.getId())
                     .build();
 
             log.info("P120 Step 3 completed successfully - vcId: {}", certificateVc.getId());
@@ -274,14 +276,14 @@ public class EntityEnrollmentProtocolImpl implements EntityEnrollmentProtocol {
         }
 
         // 3. Validate authNonce match
-        if (!didAuth.getAuthNonce().equals(expectedAuthNonce)) {
+        if (!AuthNonceMatcher.matches(expectedAuthNonce, didAuth.getAuthNonce())) {
             log.error("AuthNonce mismatch");
             throw new TaSdkException(TaSdkErrorCode.SDK_SIGNATURE_VERIFICATION_FAILED,
                 "AuthNonce mismatch");
         }
 
         // 4. Retrieve client DID Document
-        DidDocument clientDidDoc = didDocumentProvider.getDidDocument(didAuth.getDid());
+        DidDocument clientDidDoc = didDocumentProvider.getDidDocument(verificationMethod);
         if (clientDidDoc == null) {
             log.error("Client DID Document not found: {}", didAuth.getDid());
             throw new TaSdkException(TaSdkErrorCode.SDK_DID_DOCUMENT_NOT_FOUND);

@@ -169,7 +169,7 @@ ProposeEnrollEntityResponse response = protocol.proposeEnrollEntity(request);
 #### Output Parameters
 | Type | Description | M/O | 비고 |
 |---|---|---|---|
-| `RequestEnrollEntityResponse` | 등록 요청 응답 | M | txId, vcUrl 포함 |
+| `RequestEnrollEntityResponse` | 등록 요청 응답 | M | txId, iv, encVc, vcUrl, vcId 포함 (vcId는 서버 내부용) |
 
 #### Function Declaration
 ```java
