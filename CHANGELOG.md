@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] (v1.0.0)
+## [Unreleased] (v3.0.0)
 
 ### 🚀 New Features
 - TA SDK Server
